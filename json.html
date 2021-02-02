@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Governi Italiani</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.it.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css"/>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-60425C57SZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-60425C57SZ');
+</script>
+   
+  </head>
+<body>
+<div class="container">
+  <div class="jumbotron">
+    <h1 alighn="center">Quanti governi ci sono stati in Italia dalla tua nascita?</h1>      
+    <p>Questa pagina è stata creata a Gennaio 2021, quando stiamo assistendo all'ennesima caduta di un governo. Stanco di tutto questo mi sono chiesto quanti governi si sono alternati in Italia da quando sono nato.<br><br>
+        Qua sotto potete calcolarlo anche voi.</p>
+  </div>
+  <div class='col-sm-12 align-items-center'>
+         <div class="form-group col-md-4 col-md-offset-4">
+            <div class='input-group date' id='datePicker'>
+               <input type='text' class="form-control" id="selected_date"/>
+               <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+               </span>
+            </div>      
+</div>
+</div>
+<div class="jumbotron col-md-12 text-center">
+  <p id="differrent_text"></p>
+    <h3>Da quanto sei nato/a ci sono stati <span id="push_age"></span><span id="not_found"></span> governi.</h3>
+     <h3>La durata media dei governi è stata <span id="numero_average"></span> anni.</h3>
+  </div>
+<div class="col-md-12">
+                  <div class="icon-container1 d-flex" id="social_media">
+                    <ul>
+                      <li><button type="button" id="share_facebook" class="fa fa-facebook  social_button" data-age ="" data-average=""></button></li>
+                      <li><button type="button" id="share_twitter" class="fa fa-twitter social_button"></button></li>
+                     <!--- <li><button  type="button" id="share_whatsapp" class="fa fa-whatsapp  social_button"></button></li>--->
+                    </ul>
+                  </div>
+  <button type="button" class="btn btn-success col-md-6 col-xs-12 col-md-offset-3  " id="share_button" style="margin-bottom:30px">Share</button>
+</div>
+</body>
+  <script type="text/javascript">
+$(document).ready(function() {
+ //$.datepicker.regional['it'];
+ 
+ 
+$("#not_found").hide();
+$('.social_button').hide();
+
+$('#datePicker').datepicker({
+ 
+  format: "dd/mm/yyyy",
+  //format: "T 12",
+  orientation: "top",
+  autoclose: true,
+  language: "it-IT",
+    //locale: "id",
+}).on('changeDate', function(e){
+  var selected = $("#selected_date").val();
+  var day = new Date(e.date).getDate();
+  if(day.toString().length ==1)
+  {
+    day ="0"+day;
+  }
+  var currMonth = new Date(e.date).getMonth() + 1+"-";
+  if(currMonth.toString().length ==2){
+    currMonth ="0"+currMonth;
+  }
+  var fullyear = new Date(e.date).getFullYear()+"-";
+  var new_date = "T12:00:00.000Z"
+  var selectted = fullyear+currMonth+day+new_date;
+  //console.log(currMonth.toString().length);
+  $.ajax({
+           url: "governi.json",
+           dataType: "json",
+           type: 'GET',
+           cache: false,
+           async: false,
+           beforeSend: function(xhr){xhr.setRequestHeader('X-Test-Header', 'test-value');},
+           success: function (data) {
+           $.each(data, function(i, field){
+              var product_data = field;
+            var total_length = data.length;  
+  var numero_age = field.NumeroGoverno;
+    var start_date = field.StartDate;
+    var end_date = field.EndDate;
+    var result = [];
+    var not_found = [];
+  // console.log(selectted);
+   var average_date = end_date.substring(0, 4);                    
+                    var newStr = fullyear.replace(/-/g, ' ');
+                    //console.log( newStr );
+                    var new_current_year = new Date().getFullYear();
+    if(selectted <= "1946-07-14T12:00:00.000Z"){
+      var last_data =data[total_length-1].NumeroGoverno;
+      //console.log(last_data);
+      $( "#push_age" ).text( last_data );
+                    //var new_calculate_date = new_current_year - newStr;
+                    //var new_numero_second = last_data/new_calculate_date;
+                   // var new_numero_value = "2";
+                    $("#differrent_text").show();
+                     $( "#differrent_text" ).text("Sei nato/a prima dell'era repubblicana. Qua sotto consideriamo solamente i governi in era repubblicana");
+                    $( "#numero_average" ).text("1.1");
+                    //$().data('age', card_value);
+                    return false;
+                     //$( "#push_age" ).append(card_value);
+
+    }
+    else
+    {
+if(start_date < selectted && end_date > selectted)
+        {
+                      result.push(numero_age);
+                      var card_value=  total_length - result +1;
+                     //console.log(result);
+                    // $("#push_age").replaceWith(" ");
+                    $("#differrent_text").hide();
+                    $( "#push_age" ).text( card_value );
+                    //console.log(new_current_year);
+                    //console.log(newStr);
+                    var calculate_date = new_current_year - newStr;
+                     //console.log(calculate_date);
+                    var numero_second = calculate_date/card_value;
+                     //console.log(numero_second);
+                    var value_numero = numero_second.toFixed(1);
+                    $( "#numero_average" ).text( value_numero );
+                    //$().data('age', card_value);
+                    return false;
+                     //$( "#push_age" ).append(card_value);
+                      }
+                      else{
+                        not_found.push("1");
+                        var calculate_date = new_current_year - newStr;
+                    var numero_second = not_found/calculate_date;
+                    var value_numero = numero_second.toFixed(1)
+                    $( "#numero_average" ).text( value_numero );
+                    $("#differrent_text").hide();
+                    $('.social_button').attr('data-age', not_found);
+                    $('.social_button').attr('data-average', value_numero);
+                        $( "#push_age" ).text( not_found );
+                      }
+    }
+     });
+        }
+});
+});
+});
+
+      </script>
+    <script>
+      $('#share_button').on("mouseenter", function(){
+        $('.social_button').show(500);
+       });
+       $('#share_button').on("click", function(){
+        $('.social_button').hide(500);;
+        });
+    </script>  
+    <script>
+      $("#share_facebook").on("click", function() {
+       var age= $(this).attr("data-age")
+       var average= $(this).attr("data-average")
+       var pageUrl = encodeURIComponent(document.URL);
+          url = "https://www.facebook.com/sharer/sharer.php?u="+pageUrl+"&result1" + age+"&result2="+average;
+          window.location.replace(url);
+      });
+
+      $("#share_twitter").on("click", function() {
+        var age= $(this).attr("data-age")
+       var average= $(this).attr("data-average")
+       var pageUrl = encodeURIComponent(document.URL);
+          url = "https://twitter.com/intent/tweet?url="+pageUrl+"&result1=" + age+"&result2="+average;
+          window.location.replace(url);
+      });
+     /* $("#share_whatsapp").on("click", function() {
+        var age= $(this).attr("data-age")
+       var average= $(this).attr("data-average")
+       var whatsapp_url = " https://api.whatsapp.com/send?phone=?result1=" + age+"&result2="+average;
+window.location.href = whatsapp_url;
+      });*/
+    </script>
+</html>  
