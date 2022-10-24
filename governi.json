@@ -663,10 +663,20 @@
   "NumeroGoverno": 67,
   "Presidente": "Mario Draghi",
   "StartDate": "2021-02-13T12:00:00.000Z",
-  "EndDate": "",
+  "EndDate": "2022-10-22T12:00:00.000Z",
   "Partito": "Indipendente",
   "Governo": "Draghi I",
   "Legislatura": "XVIII",
+  "Presidente della Repubblica": "Sergio Mattarella"
+  }
+   {
+  "NumeroGoverno": 68,
+  "Presidente": "Giorgia Meloni",
+  "StartDate": "2022-10-22T13:00:00.000Z",
+  "EndDate": "",
+  "Partito": "Fratelli d'Italia",
+  "Governo": "Meloni I",
+  "Legislatura": "IXX",
   "Presidente della Repubblica": "Sergio Mattarella"
   }
 ]
